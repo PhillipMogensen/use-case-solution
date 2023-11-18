@@ -1,0 +1,7 @@
+
+- repo: https://github.com/PhillipMogensen/use-case-solution
+  rev: v0.1.5
+  hooks:
+    - id: ruff
+      args: [ --fix ]
+    - id: ruff-format
