@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.649">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Phillip B. Mogensen">
+
+<title>First look at data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="explore_files/libs/clipboard/clipboard.min.js"></script>
+<script src="explore_files/libs/quarto-html/quarto.js"></script>
+<script src="explore_files/libs/quarto-html/popper.min.js"></script>
+<script src="explore_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="explore_files/libs/quarto-html/anchor.min.js"></script>
+<link href="explore_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="explore_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="explore_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="explore_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="explore_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">First look at data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Phillip B. Mogensen </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_light</span>())</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rcpp)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/R/r_functions.r"</span>)) </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sourceCpp</span>(<span class="fu">here</span>(<span class="st">"src/R/cpp_functions.cpp"</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>data_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"data/data.csv"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">read_delim</span>(data_file, <span class="at">delim =</span> <span class="st">","</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>target <span class="ot">=</span> <span class="st">"project_type"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="missingness" class="level1">
+<h1>Missingness</h1>
+<p>We first do a quick check of the completeness of the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  {<span class="fu">nrow</span>(.) <span class="sc">-</span> <span class="fu">nrow</span>(<span class="fu">na.omit</span>(.))} <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(<span class="st">"There are %i rows with missing data"</span>, .) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  cat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>There are 0 rows with missing data</code></pre>
+</div>
+</div>
+</section>
+<section id="target-variable-overview" class="level1">
+<h1>Target variable overview</h1>
+<p>Let us first have a quick look at the classes in the target variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(target) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>.
+      allprojects   atticrenovation         extension    loftconversion 
+                1                 7                26                45 
+         newbuild no_project_intent        renovation       replacement 
+                8             98389               558               509 
+        reroofing         upgrading 
+               38               419 </code></pre>
+</div>
+</div>
+<p><strong>Initial thoughts:</strong></p>
+<ul>
+<li>The immediate approach here is be a two-stage model:</li>
+<li>First, divide into <code>no_project_intent</code> and <code>any_project_intent</code> and make a classifier for likelihood of any intent. That is, we try to answer the question ‘can we distinguis between those with intent and those with no intent?’.</li>
+<li>Second, drop all <code>no_project_intent</code> and make a multiclass classifier of likelihood of each individual class vs.&nbsp;the remaining. That is, we try to answer the question ‘among those with project intent, can we classify the intent’?</li>
+<li>For the first part, we note the heavy imbalance towards the negative label. This is not problematic in and of itself, but we must keep it in the back of our minds when designing a model.</li>
+<li>For the second part, we note that there are many classes with very little data. Judging purely by the names, it seems that some of these may somewhat overlap and can therefore be grouped. Lacking access to a subject matter expert, we observe the following:
+<ul>
+<li><code>atticrenovation</code> and <code>loftconversion</code> are possibly synonomous. One could similarly argue that they both fall under the category of <code>renovation</code>.</li>
+<li><code>newbuild</code> and <code>extension</code> have of similar flavour, in the sense that both are constructions projects and likely very costly projects. Similarly, we could argue that <code>reroofing</code>, although a different type of construction project, is also a construction project.</li>
+<li>Two quick Google searches for <code>Velux replacement</code>/<code>Velux upgrading</code> indicates that the types <code>replacement</code> and <code>upgrading</code> are window related.</li>
+<li><code>all_projects</code> is extremely rare and can just be removed.</li>
+</ul></li>
+</ul>
+<p>Grouping the projects as above leaves us with two datasets for analysis: one with a target variable that looks like the below</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(target) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      . <span class="sc">==</span> <span class="st">"no_project_intent"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      <span class="dv">0</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  } <span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>.
+    0     1 
+98389  1611 </code></pre>
+</div>
+</div>
+<p>And a smaller dataset with a target variable that looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>renovation_types <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"atticrenovation"</span>, <span class="st">"loftconversion"</span>, <span class="st">"renovation"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>construction_types <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"newbuild"</span>, <span class="st">"extension"</span>, <span class="st">"reroofing"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>window_types <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"replacement"</span>, <span class="st">"upgrading"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span>(<span class="sc">!!</span><span class="fu">sym</span>(target) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"allprojects"</span>, <span class="st">"no_project_intent"</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_target =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!!</span><span class="fu">sym</span>(target) <span class="sc">%in%</span> renovation_types <span class="sc">~</span> <span class="st">"renovation"</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!!</span><span class="fu">sym</span>(target) <span class="sc">%in%</span> construction_types <span class="sc">~</span> <span class="st">"construction"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!!</span><span class="fu">sym</span>(target) <span class="sc">%in%</span> window_types <span class="sc">~</span> <span class="st">"windows"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="sc">!!</span><span class="fu">sym</span>(target)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(new_target) <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>.
+construction   renovation      windows 
+          72          610          928 </code></pre>
+</div>
+</div>
+<section id="intended-use-considerations" class="level2">
+<h2 class="anchored" data-anchor-id="intended-use-considerations">Intended use considerations</h2>
+<p>In the above, we have implicitly assumed that the goal of the aforementioned models is to distinguish buyers from non-buyers and, in addition, distinguish the type of project that a predicted buyer is most interested in. This would, for example, be the case if the end goal of producing the model is to identify possible intervention sites to increase sales. I.e., if we can identify a potential customer with intent, then, by identifying the most likely type of intent said customer has, we can make targeted ‘ads’ to push the customer in the right direction. Additionally, we may be able to identify fringe customers and produce targeted campaigns (e.g., ‘strike now and get x% off your purchase’ campaigns) to drive up their willingness to buy.</p>
+<p>As always, models come with pitfalls and the above two are no exceptions. If we mean to identify intervention sites, the causal structure of the underlying mechanisms become important. For instance, suppose the variable <code>duration_of_pages_newbuild_sec</code> is a very strong predictor of a predicted customer being interested in starting a <code>construction</code> project. If <code>duration_of_pages_newbuild_sec</code> is actually a child of <code>project_type</code> in the causal graph (e.g., because it simply takes a very long time to plan a <code>newbuild</code>, so already decided customers will necessarily have a high view-time), then intervening on a customer identified due to having a high view-time on <code>newbuild</code> pages might be counterproductive. Suppose, for example, we intervene by making a targeted campaign of the ‘strike now and get x% off your purchase’ type. We then stand to lose money, because we are using a predictor that is downstream of the decision to make a <code>newbuild</code> purchase. Or, in other words, that customer was going to start a <code>newbuild</code> project either way, so reducing their price has directly reduced profit. Possible intervention sites can, however, be A/B tested post identification.</p>
+</section>
+</section>
+<section id="covariate-exploration" class="level1">
+<h1>Covariate exploration</h1>
+<section id="overview-and-screening-of-variables" class="level2">
+<h2 class="anchored" data-anchor-id="overview-and-screening-of-variables">Overview and screening of variables</h2>
+<p>With very wide data that we do not know and where subject matter experts are not available, a good starting point would often be to start with a PCA or screen the Markov blanket with LASSO or similar. However, with with this data, I feel that it’s <em>just</em> small enough and has sufficiently self-explanatory names, that we may get good results by getting our fingers into the data and taking a look at the individual columns to reduce the dimensions.</p>
+<section id="non-informative-columns" class="level3">
+<h3 class="anchored" data-anchor-id="non-informative-columns">Non-informative columns</h3>
+<p>The covariate space spans 102 columns, so we start by doing a quick check for whether any columns with zero information are present to see if we can reduce it slightly. That is, we check whether any columns are constants across all rows, as these will serve no modelling purposes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>constant_columns <span class="ot">=</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(FastUniqueC) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  as.matrix <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    bool_vector <span class="ot">=</span> .[<span class="dv">1</span>,]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    bool_vector[bool_vector]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  } <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  names</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print_variables</span>(<span class="st">"The following varibles have no variation:"</span>, constant_columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The following varibles have no variation::
+customer_country
+number_of_clicked_banners_outside_velux</code></pre>
+</div>
+</div>
+<p>Thus, we note that all data stems from France and that the <code>number_of_clicked_banners_outside_velux</code> is constantly zero. We will therefore omit these columns when doing any kind of inference.</p>
+</section>
+<section id="name-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="name-patterns">Name patterns</h3>
+<p>Let us additionally do a quick inspection of the variable names to see if we can spot any kind of patterns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>categorical_columns <span class="ot">=</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="fu">is.character</span>(.x))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  colnames <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  sort</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>numeric_columns <span class="ot">=</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">is.character</span>(.x))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  colnames <span class="sc">%&gt;%</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  sort</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print_variables</span>(<span class="st">"Categorical vriables"</span>, categorical_columns, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Categorical vriables:
+customer_country, final_id
+first_brproject, first_brspace
+most_frequent_page, most_frequent_page_project_type
+most_frequent_page_space_type, project_type
+second_frequent_page, second_frequent_page_project_type
+second_frequent_page_space_type, space_type
+tag_project_last_visited_page, tag_space_last_visited_page
+third_frequent_page, third_frequent_page_project_type
+third_frequent_page_space_type</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print_variables</span>(<span class="st">"Numeric variables"</span>, numeric_columns, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Numeric variables:
+avg_page_visit_per_session, avg_pages_allprojects_per_session
+avg_pages_allspaces_per_session, avg_pages_bathroom_per_session
+avg_pages_bedroom_per_session, avg_pages_extension_per_session
+avg_pages_flatroof_per_session, avg_pages_hallwaycorridor_per_session
+avg_pages_homeoffice_per_session, avg_pages_kidsroom_per_session
+avg_pages_kitchen_per_session, avg_pages_livingroom_per_session
+avg_pages_loftconversion_per_session, avg_pages_newbuild_per_session
+avg_pages_renovation_per_session, avg_pages_replacement_per_session
+avg_pages_reroofing_per_session, avg_pages_upgrading_per_session
+avg_time_per_session_sec, duration_of_pages_allprojects_sec
+duration_of_pages_allspaces_sec, duration_of_pages_bathroom_sec
+duration_of_pages_bedroom_sec, duration_of_pages_extension_sec
+duration_of_pages_flatroof_sec, duration_of_pages_hallwaycorridor_sec
+duration_of_pages_homeoffice_sec, duration_of_pages_kidsroom_sec
+duration_of_pages_kitchen_sec, duration_of_pages_livingroom_sec
+duration_of_pages_loftconversion_sec, duration_of_pages_newbuild_sec
+duration_of_pages_renovation_sec, duration_of_pages_replacement_sec
+duration_of_pages_reroofing_sec, duration_of_pages_upgrading_sec
+if_brproject, if_brspace
+if_intent, if_project_intent_changed
+if_returning_customer, if_space_intent_changed
+if_visited_marketing_domain_flag, number_of_clicked_banners
+number_of_clicked_banners_on_velux, number_of_clicked_banners_outside_velux
+number_of_form_submit_visits, number_of_friday_events
+number_of_hour_1_6_events, number_of_hour_13_18_events
+number_of_hour_19_24_events, number_of_hour_7_12_events
+number_of_ipad_sessions, number_of_mobile_sessions
+number_of_moday_events, number_of_page_to_trigger
+number_of_page_views, number_of_pages_allprojects
+number_of_pages_allspaces, number_of_pages_bathroom
+number_of_pages_bedroom, number_of_pages_extension
+number_of_pages_flatroof, number_of_pages_hallwaycorridor
+number_of_pages_homeoffice, number_of_pages_kidsroom
+number_of_pages_kitchen, number_of_pages_livingroom
+number_of_pages_loftconversion, number_of_pages_newbuild
+number_of_pages_renovation, number_of_pages_replacement
+number_of_pages_reroofing, number_of_pages_upgrading
+number_of_saturday_events, number_of_sessions
+number_of_stationary_sessions, number_of_submited_forms
+number_of_sunday_events, number_of_thursday_events
+number_of_tuesday_events, number_of_unique_page_views
+number_of_unique_project_type, number_of_unique_space_type
+number_of_wednesday_events, total_time_of_sessions_sec</code></pre>
+</div>
+</div>
+<p>Based on this (quite lengthy) output, we quickly spot a few things:</p>
+<ul>
+<li>There is a <code>final_id</code> which, presumably, identifies a customer. The ID is, however, not a unique identifier, as there are only 89340 entries (of 100000). This indicates that some customers are probably return customers. This is further corroborated by the existence of <code>if_returning_customer</code>.</li>
+<li>Note, however, that a <code>final_id</code> appearing <span class="math inline">\(&gt;1\)</span> times does not necessarily mean that they have had any project intent in any of their visits/sessions. For instance, the ID <code>634cfa8426a6cc51fa67805d</code> appears four times, but each time with <code>if_returning_customer == 0</code> and <code>project_type == 'no_project_intent'</code>. The rows are not duplicates of one another. These, if I understand them correctly, introduce some kind of longitudinal dependence which is not desirable, so the rows likely have to be aggregated to unique IDs somehow. We note, however, that no <code>final_id</code> has multiple distinct <code>project_type</code> entries.</li>
+<li>The variable <code>if_intent</code> is an indicator of <code>project_type == 'no_project_intent'</code> and should thus not be used for modelling.</li>
+<li>In addition, I am wary of the <code>if_brproject</code> variable, not knowing what <code>br</code> stands for. We leave it out, just to be on the safe side that we do not include a variable that lies downstream in the causal graph of <code>project_type</code>. This, however, should be verified with a subject matter expert.</li>
+<li>In a similar fashion, the variables <code>if_&lt;space/project&gt;_intent_changed</code> seem like derived variables that may be dangerous to keep. To be safe, we exlude these as well.</li>
+<li>The categorical variables seem to mostly be a ranking of the most visited pages, of which there very many. For instance, <code>most_frequent_page</code> has 896 unique entries. To use any of these, we’d likely pick out some ‘extra interesting’ (with the help of a subject matter expert) pages and make indicators of whether these were the most frequently visited. For now, we’ll simply omit all categorical variables.</li>
+<li>There references to <code>spaces</code>, which seems to be a more finely grained partition of the project types <code>renovation</code>, <code>replacement</code> and <code>upgrading</code> into rooms of the house.</li>
+<li><code>space_intent</code> seems to be a derived variable that is known only after <code>project_type</code> is known, since <span class="math display">\[{project\_type} = {no\_project\_intent} \Rightarrow {space\_type} = {no\_space\_intent}\]</span> but not the reverse. Thus, we omit the <code>space_type</code> variable. To be safe, we also omit the related (but not entirely clear) indicator <code>if_brspace</code>.</li>
+<li>Of the numeric columns, many seem to be variants of the same thing. That is, many variables follow a pattern of <code>&lt;avg / number_of_pages / duration_of&gt;_&lt;project/space type&gt;</code>. Thus, we expect these be derived versions of one another and therefore highly correlated.
+<ul>
+<li>For instance, the variables <code>avg_pages_renovation_per_session</code> and <code>number_of_pages_pages_renovation</code> are a correlation of 0.91 (<span class="math inline">\(p &lt; 2.2\times 10^{-16}\)</span>).</li>
+<li>The pair (<code>number_of_pages/avg_pages</code>, <code>duration_of</code>) variables are unlikely to be <em>as</em> highly correlated, but we still observe a non-negligible correlation. For example, the correlation between <code>number_of_pages_pages_renovation</code> and <code>duration_of_pages_renovation_sec</code> have a correlation of <code>round(cor(df$number_of_pages_pages_renovation, df$duration_of_pages_renovation_sec), 3)</code> (<span class="math inline">\(p &lt; 2.2\times 10^{-16}\)</span>).</li>
+<li>Thus, to be safe, we choose only one of these types of variables to focus on.</li>
+</ul></li>
+<li>The <code>avg</code> columns comes in <code>avg_pages_&lt;space/project&gt;_...</code> variants, which we expect are also collinear to some dregree:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>space_variables <span class="ot">=</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(space_type) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  unique <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    match_string <span class="ot">=</span> <span class="fu">paste0</span>(., <span class="at">collapse =</span> <span class="st">"|"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"avg"</span>), space_type) <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="fu">matches</span>(match_string))</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  } <span class="sc">%&gt;%</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  colnames</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>project_variables <span class="ot">=</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"avg"</span>), project_type) <span class="sc">%&gt;%</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(project_type) <span class="sc">%&gt;%</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  unique <span class="sc">%&gt;%</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    match_string <span class="ot">=</span> <span class="fu">paste0</span>(., <span class="at">collapse =</span> <span class="st">"|"</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"avg"</span>), project_type) <span class="sc">%&gt;%</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="fu">matches</span>(match_string))</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  } <span class="sc">%&gt;%</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  colnames</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the pairwise correlations and print the most highly correlated ones:</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>sorted_correlations <span class="ot">=</span> <span class="fu">lapply</span>(</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  space_variables,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) {</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>      project_variables,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(y) {</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>        correlation <span class="ot">=</span> <span class="fu">cor.test</span>(</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>          df <span class="sc">%&gt;%</span> <span class="fu">pull</span>(x),</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>          df <span class="sc">%&gt;%</span> <span class="fu">pull</span>(y)</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tibble</span>(</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>          <span class="st">"space_variable"</span> <span class="ot">=</span> x,</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>          <span class="st">"project_variable"</span> <span class="ot">=</span> y,</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>          <span class="st">"abs_cor"</span> <span class="ot">=</span> correlation<span class="sc">$</span>estimate <span class="sc">%&gt;%</span> abs,</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>          <span class="st">"marginally_significant"</span> <span class="ot">=</span> correlation<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">do.call</span>(<span class="st">"rbind"</span>, .)</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(<span class="st">"rbind"</span>, .) <span class="sc">%&gt;%</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(abs_cor))</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sorted_correlations, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 56 × 4
+   space_variable                project_variable abs_cor marginally_significant
+   &lt;chr&gt;                         &lt;chr&gt;              &lt;dbl&gt; &lt;lgl&gt;                 
+ 1 avg_pages_allspaces_per_sess… avg_pages_allpr…  0.826  TRUE                  
+ 2 avg_pages_bedroom_per_session avg_pages_upgra…  0.406  TRUE                  
+ 3 avg_pages_allspaces_per_sess… avg_pages_upgra…  0.370  TRUE                  
+ 4 avg_pages_kitchen_per_session avg_pages_renov…  0.209  TRUE                  
+ 5 avg_pages_allspaces_per_sess… avg_pages_renov…  0.159  TRUE                  
+ 6 avg_pages_homeoffice_per_ses… avg_pages_renov…  0.150  TRUE                  
+ 7 avg_pages_allspaces_per_sess… avg_pages_repla…  0.0990 TRUE                  
+ 8 avg_pages_bedroom_per_session avg_pages_allpr…  0.0940 TRUE                  
+ 9 avg_pages_livingroom_per_ses… avg_pages_renov…  0.0868 TRUE                  
+10 avg_pages_livingroom_per_ses… avg_pages_allpr…  0.0849 TRUE                  
+# ℹ 46 more rows</code></pre>
+</div>
+</div>
+<ul>
+<li>Based on the above overview, there are definitely quite a few non-zero correlations between the <code>space</code> and <code>project</code> variants of the <code>avg</code> columns. In addition, 35 of 56 are marginally significant when testing for non-zero correlations. Thus, to be safe, we omit all <code>space</code> variants of the <code>avg</code> variables.</li>
+<li>There remain, some <code>number_of</code> columns that do not follow the <code>number_of_pages_&lt;project/space type&gt;</code>. Let us do a quick investigation of the name patterns of just those. To ease readability, we remove the <code>number_of_</code> prefix of these when printing:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contains</span>(<span class="st">"number_of"</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">contains</span>(<span class="st">"number_of_page"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  colnames <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_replace</span>(., <span class="st">"number_of_"</span>, <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  sort <span class="sc">%&gt;%</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>clicked_banners
+clicked_banners_on_velux
+clicked_banners_outside_velux
+form_submit_visits
+friday_events
+hour_1_6_events
+hour_13_18_events
+hour_19_24_events
+hour_7_12_events
+ipad_sessions
+mobile_sessions
+moday_events
+saturday_events
+sessions
+stationary_sessions
+submited_forms
+sunday_events
+thursday_events
+tuesday_events
+unique_page_views
+unique_project_type
+unique_space_type
+wednesday_events</code></pre>
+</div>
+</div>
+<ul>
+<li>Based on the above output, we observe the following:</li>
+<li><code>clicked_banners</code> is likely equal to <code>clicked_banners_on_velux</code>, since we have previously observed that <code>clicked_banners_outside_velux</code> is constant at zero (and will be removed). Thus, only one of these should be used.</li>
+<li><code>number_of_sessions</code> is likely just the sum of the individual <code>number_of_ipad_sessions</code>, <code>number_of_mobile_sessions</code> and <code>number_of_stationary_sessions</code>. It may be relevant to distinguish the device the user views the site on, so we scrap only <code>number_of_sessions</code>.</li>
+<li>There are many variables that indicate when the user was most active, e.g., <code>number_of_&lt;time&gt;_events</code> and <code>number_of_&lt;weekday&gt;_events</code>. These should be fine to keep</li>
+<li>It seems that the numeric variables are structured such that, for each project type and space type, there exists the <code>avg / number_of_pages / duration_of</code> for columns for that particular space/project. However, we may note that no such columns exist for the <code>atticrenovation</code> category.</li>
+<li>Lastly, we note that there is both a <code>total_time_of_sessions_sec</code> and a <code>avg_time_per_session_sec</code>, which we expect to be highly correlated. Indeed, they have a correlation of 0.83 (<span class="math inline">\(p &lt; 2.2 \times 10^{-16}\)</span>), so we omit <code>total_time_of_sessions_sec</code></li>
+</ul>
+<p>Omitting categories by the above considerations leaves us with a reduced dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">where</span>(is.numeric),</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">contains</span>(<span class="st">"duration_of"</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">contains</span>(<span class="st">"number_of_page"</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>if_intent,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>if_brspace,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>if_brproject,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">contains</span>(<span class="st">"clicked_banners_"</span>),</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_sessions,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>if_project_intent_changed,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>if_space_intent_changed,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">all_of</span>(space_variables),</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>total_time_of_sessions_sec</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This reduced dataset now has <code>ncol(X)</code> columns.</p>
+<p>There is, however, still a chance that we are keeping highly collinear variables, We therefore do a quick check of the pairwise correlations among all pairs and print the top correlations:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">get_pairwise_correlations</span>(X), <span class="at">n =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 561 × 3
+   row                               column                            abs_cor
+   &lt;chr&gt;                             &lt;chr&gt;                               &lt;dbl&gt;
+ 1 number_of_unique_project_type     number_of_submited_forms            0.894
+ 2 if_visited_marketing_domain_flag  avg_pages_allprojects_per_session   0.590
+ 3 avg_page_visit_per_session        number_of_unique_page_views         0.582
+ 4 number_of_hour_1_6_events         number_of_stationary_sessions       0.535
+ 5 number_of_hour_19_24_events       number_of_stationary_sessions       0.502
+ 6 number_of_hour_13_18_events       number_of_stationary_sessions       0.471
+ 7 number_of_hour_7_12_events        number_of_stationary_sessions       0.438
+ 8 number_of_unique_space_type       number_of_submited_forms            0.418
+ 9 avg_page_visit_per_session        if_returning_customer               0.378
+10 number_of_moday_events            number_of_stationary_sessions       0.375
+11 avg_pages_allprojects_per_session avg_page_visit_per_session          0.374
+12 number_of_friday_events           number_of_stationary_sessions       0.366
+13 if_returning_customer             number_of_mobile_sessions           0.362
+14 number_of_unique_space_type       number_of_unique_project_type       0.356
+15 number_of_saturday_events         number_of_stationary_sessions       0.340
+16 number_of_thursday_events         number_of_stationary_sessions       0.340
+17 avg_pages_upgrading_per_session   number_of_clicked_banners           0.340
+18 number_of_tuesday_events          number_of_stationary_sessions       0.333
+19 number_of_sunday_events           number_of_stationary_sessions       0.332
+20 number_of_wednesday_events        number_of_stationary_sessions       0.304
+21 number_of_hour_19_24_events       number_of_sunday_events             0.284
+22 number_of_unique_page_views       number_of_clicked_banners           0.283
+23 number_of_hour_19_24_events       number_of_hour_1_6_events           0.275
+24 if_visited_marketing_domain_flag  avg_pages_upgrading_per_session     0.270
+25 number_of_hour_7_12_events        number_of_thursday_events           0.259
+26 number_of_hour_1_6_events         number_of_friday_events             0.256
+27 number_of_hour_7_12_events        number_of_moday_events              0.254
+28 number_of_hour_1_6_events         number_of_saturday_events           0.251
+29 number_of_hour_19_24_events       number_of_saturday_events           0.249
+30 number_of_hour_13_18_events       number_of_friday_events             0.233
+# ℹ 531 more rows</code></pre>
+</div>
+</div>
+<p>Based on this output, we definitely have not caught all highly correlated varibles. We do observe that <code>number_of_stationary_sessions</code> tends correlate highly with all time-related variables (i.e., <code>number_of_&lt;time&gt;_...</code> and <code>number_of_&lt;weekday&gt;_...</code> variables). Thus, we should either omit all those variables or the <code>number_of_stationary_sessions</code>. To simplify matters, we keep only <code>number_of_stationary_sessions</code>. Similarly, we note that <code>number_of_submitted_forms</code> correlates highly with both <code>number_of_unique_project_type</code> and <code>number_of_unique_space_type</code> so, by the same logic, we keep here only <code>number_of_submitted_forms</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> X <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_hour_1_6_events,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_hour_7_12_events,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_hour_13_18_events,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_hour_19_24_events,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_moday_events,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_tuesday_events,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_wednesday_events,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_thursday_events,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_friday_events,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_saturday_events,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_sunday_events,</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_unique_project_type,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>number_of_unique_space_type</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This leaves us with a total of <code>ncol(X)</code> candidate covariates. Some of these remain collinear, but we will handle that during the modelling process. Before moving on, we print these for an overview of what’s left:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>X <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  colnames <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  sort <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>avg_page_visit_per_session
+avg_pages_allprojects_per_session
+avg_pages_extension_per_session
+avg_pages_flatroof_per_session
+avg_pages_hallwaycorridor_per_session
+avg_pages_loftconversion_per_session
+avg_pages_newbuild_per_session
+avg_pages_renovation_per_session
+avg_pages_replacement_per_session
+avg_pages_reroofing_per_session
+avg_pages_upgrading_per_session
+avg_time_per_session_sec
+if_returning_customer
+if_visited_marketing_domain_flag
+number_of_clicked_banners
+number_of_form_submit_visits
+number_of_ipad_sessions
+number_of_mobile_sessions
+number_of_stationary_sessions
+number_of_submited_forms
+number_of_unique_page_views</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="an-inspection-of-the-screened-variables" class="level2">
+<h2 class="anchored" data-anchor-id="an-inspection-of-the-screened-variables">An inspection of the screened variables</h2>
+<p>Based on the above considerations, we take a closer look at the screened variables marginal distributions.</p>
+<p>First, let us get an overview of what they each contain:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>X <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">all_of</span>(<span class="fu">colnames</span>(X)),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(variable) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n unique"</span> <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(value)),</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mean (SD)"</span> <span class="ot">=</span> <span class="fu">sprintf</span>(</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"%.2f (%.2f)"</span>,</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mean</span>(value),</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sd</span>(value)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Range"</span> <span class="ot">=</span> <span class="fu">sprintf</span>(</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"%.0f--%.0f"</span>,</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">min</span>(value),</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">max</span>(value)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="st">`</span><span class="at">n unique</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="fu">ncol</span>(X))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 4
+   variable                              `n unique` `Mean (SD)`      Range   
+   &lt;chr&gt;                                      &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;   
+ 1 if_returning_customer                          2 0.27 (0.44)      0--1    
+ 2 if_visited_marketing_domain_flag               2 0.65 (0.48)      0--1    
+ 3 number_of_submited_forms                       7 0.01 (0.09)      0--7    
+ 4 avg_pages_hallwaycorridor_per_session          9 0.00 (0.07)      0--3    
+ 5 avg_pages_extension_per_session               10 0.00 (0.04)      0--3    
+ 6 number_of_form_submit_visits                  10 0.12 (0.44)      0--13   
+ 7 avg_pages_loftconversion_per_session          13 0.00 (0.08)      0--6    
+ 8 avg_pages_reroofing_per_session               13 0.00 (0.04)      0--5    
+ 9 number_of_ipad_sessions                       13 0.02 (0.30)      0--65   
+10 number_of_unique_page_views                   13 2.68 (1.21)      1--13   
+11 avg_pages_newbuild_per_session                14 0.00 (0.04)      0--3    
+12 number_of_clicked_banners                     15 0.15 (0.62)      0--15   
+13 avg_pages_renovation_per_session              19 0.03 (0.19)      0--5    
+14 avg_pages_replacement_per_session             19 0.03 (0.22)      0--6    
+15 number_of_mobile_sessions                     23 0.67 (1.01)      0--51   
+16 avg_pages_flatroof_per_session                24 0.06 (0.32)      0--6    
+17 avg_page_visit_per_session                    34 2.80 (1.54)      0--15   
+18 avg_pages_upgrading_per_session               38 0.30 (0.80)      0--15   
+19 avg_pages_allprojects_per_session             49 1.10 (1.34)      0--15   
+20 number_of_stationary_sessions                 71 0.79 (3.16)      0--647  
+21 avg_time_per_session_sec                    6519 249.32 (1187.79) 0--85345</code></pre>
+</div>
+</div>
+<p>Based on this output, we observe the following:</p>
+<ul>
+<li>The <code>if_...</code> variables are binary and are fine to be kept as is.</li>
+<li>Almost all of the remaining variables are heavily right-skewed. Many of these are likely fine when transformed <span class="math inline">\(x \mapsto \log(x + 1)\)</span>.</li>
+<li>Many variables have very few non-zero values (as evidenced by the mean and standard deviation being approximately zero). These may benefit turned into categorical/binary variables tracking <code>none/any</code> or <code>0/1/2+</code> or similarly. However, at first we leave these as is and return if they turn out to be problematic</li>
+</ul>
+<section id="figures" class="level3">
+<h3 class="anchored" data-anchor-id="figures">Figures</h3>
+<p>The only variables with, seemingly, a lot of movement are <code>number_of_mobile_sessions</code>, <code>avg_pages_flatroof_per_session</code>, <code>avg_page_visit_per_session</code>, <code>avg_pages_upgrading_per_session</code>, <code>avg_pages_allprojects_per_session</code>, <code>number_of_stationary_sessions</code> and <code>avg_time_per_session_sec</code>. We plot histograms of these on a <span class="math inline">\(x \mapsto \log_{10}(x)\)</span> scale:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>variables_with_movement <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"number_of_mobile_sessions"</span>, </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_pages_flatroof_per_session"</span>, </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_page_visit_per_session"</span>, </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_pages_upgrading_per_session"</span>, </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_pages_allprojects_per_session"</span>, </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"number_of_stationary_sessions"</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_time_per_session_sec"</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>plotdata <span class="ot">=</span> X <span class="sc">%&gt;%</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(variables_with_movement)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">all_of</span>(variables_with_movement),</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"Variable"</span>,</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"Value"</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Value =</span> <span class="fu">log10</span>(Value <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> plotdata,</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> Value</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(..density..)),</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span>Variable,</span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">scales =</span> <span class="st">"free_x"</span></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density (estimated)"</span>,</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(log[<span class="dv">10</span>](Value))</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="explore_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
