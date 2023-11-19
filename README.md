@@ -7,7 +7,7 @@ curl -LJO "https://github.com/velux-lead-data-scientist/velux_data_scientist/raw
 # Project dependencies
 To run the Quarto notebook, which contains only `R`, a valid `R` (>4.2.3) installation with `renv` installed is needed. The `R` environment is managed by `renv` and can be reproduced by running `renv::restore()`. Note that it is not necessary to run the Quarto notebook. A pre-rendered `.html` is available at `notebooks/explore.html`. This notebook contains the general considerations I made when having a first look at the data.
 
-To run the python part of the project a valid `Python` (>3.12) and `poetry` is needed. In addition, a valid ClearML configuration file must exists in the local environment. The environment is managed by `poetry`. 
+To run the python part of the project a valid `Python` (>3.12) and `poetry` is needed. In addition, a valid ClearML configuration file must exist in the local environment. The environment is managed by `poetry`. 
 
 # Data overview
 Per the observations in `explore.html`, we split the raw `data/data.csv` into two separate datasets: one for classifying project intent from no project intent (referred to as the `binary` dataset) and one for classifying project types from one another among customers/sessions with known/assumed intent (referred to as the `multiclass` dataset).
