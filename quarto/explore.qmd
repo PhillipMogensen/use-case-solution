@@ -96,10 +96,11 @@ df %>%
 
 As noted above, there is a heavy class imbalance in the data set. In the data that we'll construct for the second model (recall: multiclass classifier among those with intent), it is not *that* bad (although the `construction` category is still very underrepresented), but in the data we'll construct for the first model (recall: binary classifier for intent or not), more than 98% of the data belongs to the negative class. While this is not a problem *per se*, it does require some considerations.
 
--   **Choice of metric:** of course, the choice of metric becomes important when classes are imbalanced. The most immediate consequence is that we cannot use the accuracy (or rather, it is problematic). The two obvious choices are to use either the ROC AUC of the precision-recall AUC, depending on the intended use. That is, if misclassification of negatives and positives carry the same weight, so to speak, the ROC AUC is the obvious choice. If the importance lies in detecting the positives to greater effect, then the precision-recall is a more obvious choice. We conjecture here, that detecting positives in the binary model is of greater important than detecting negatives, so for the binary model we'll use the precision-recall AUC. For the multiclass model, we conjecture that an overall balanced performance is what of importance, so we'll use the weighted ROC AUC.
+-   **Choice of metric:** of course, the choice of metric becomes important when classes are imbalanced. The most immediate consequence is that we cannot use the accuracy (or rather, it is problematic). The two obvious choices are to use either the ROC AUC of the precision-recall AUC, depending on the intended use. That is, if misclassification of negatives and positives carry the same weight, so to speak, the ROC AUC is the obvious choice. If the importance lies in detecting the positives to greater effect, then the precision-recall is a more obvious choice. Lacking such knowledge, we simply go for overall performance in both scenarios and optimise on the ROC auc. However, we shall also record the PR curves for good measure.
 
 -   **Sample size:** in the data for the binary model, we likely have much more data on the negatives than what we need to pick up any patterns in the data. Thus, we probably do not strictly *need* to use all `r sum(df$project_type == "no_project_intent")`. Thus, we could under-sample the majority class (which, in turn, would also alleviate the imbalance issue). However, $10^5$ observations is still not that much, so we elect to keep all samples, so as not to discard any information.
-  -   As an side-note, it is becoming increasingly common that people attempt to _solve_ class imbalances by oversampling techniques (e.g., SMOTE). Personally, I challenge the notion that class imbalances are inherently problematic (and most likely a relic of the past when accuracy was to go-to metric) and, while oversampling techniques such as SMOTE certainly have their place, they will more often than not lead to overfitting and biased coefficient estimators. Thus, we do _not_ oversample here
+
+-   As an side-note, it is becoming increasingly common that people attempt to *solve* class imbalances by oversampling techniques (e.g., SMOTE). Personally, I challenge the notion that class imbalances are inherently problematic (and most likely a relic of the past when accuracy was to go-to metric) and, while oversampling techniques such as SMOTE certainly have their place, they will more often than not lead to overfitting and biased coefficient estimators. Thus, we do *not* oversample here
 
 ## Intended use considerations
 
@@ -333,11 +334,12 @@ Based on this output, we observe the following:
 -   The `if_...` variables are binary and are fine to be kept as is.
 -   Almost all of the remaining variables are heavily right-skewed. Many of these are likely fine when transformed $x \mapsto \log(x + 1)$.
 -   Many variables have very few non-zero values (as evidenced by the mean and standard deviation being approximately zero). These may benefit from being turned into categorical/binary variables tracking `0/1+` or `0/1/2+` or similarly. Really, it is only `avg_page_visit_per_session`, `avg_pages_allprojects_per_session`, `number_of_stationary_sessions` and `avg_time_per_session_sec` that seem to have distributions that are not almost entirely concentrated on $0$. Thus, we elect to binarize all the remaining variables by turning them into `0/1+` variables.
-  -   The interpretation of the `avg_pages_<category>_per_session` then becomes `any_pages_<category>_across_sessions` instead and the `number_of_<something>` variables become `any_<something>` variables instead.
+-   The interpretation of the `avg_pages_<category>_per_session` then becomes `any_pages_<category>_across_sessions` instead and the `number_of_<something>` variables become `any_<something>` variables instead.
 
 ## Aggregation of `final_id`'s.
-As mentioned previously, there are `final_id`'s that occur $>1$ times and, as the name indicates that this is a unique identifier, we elect to aggregate these. First, we note that there are `r df %>% count(final_id) %>% filter(n > 1) %>% pull(final_id) %>% unique %>% length` IDs that occur $>1$ times, making up a total of `r df %>% count(final_id) %>% filter(n > 1) %>% pull(final_id) %>% {filter(df, final_id %in% .)} %>% nrow` rows. Lacking information about the structure of duplicate IDs, we elect to simply max-aggregate the problematic rows. Then, for instance, an ID that is in some rows a returning customer but in others not a returning customer (e.g., `final_id == 634cfba158436fcb9c8e17e6`), will appear as a returning customer in the final data.
-We can do this aggregation with no issue, because there exists no `final_id` that has more than one unique entry in `project_type`:
+
+As mentioned previously, there are `final_id`'s that occur $>1$ times and, as the name indicates that this is a unique identifier, we elect to aggregate these. First, we note that there are `r df %>% count(final_id) %>% filter(n > 1) %>% pull(final_id) %>% unique %>% length` IDs that occur $>1$ times, making up a total of `r df %>% count(final_id) %>% filter(n > 1) %>% pull(final_id) %>% {filter(df, final_id %in% .)} %>% nrow` rows. Lacking information about the structure of duplicate IDs, we elect to simply max-aggregate the problematic rows. Then, for instance, an ID that is in some rows a returning customer but in others not a returning customer (e.g., `final_id == 634cfba158436fcb9c8e17e6`), will appear as a returning customer in the final data. We can do this aggregation with no issue, because there exists no `final_id` that has more than one unique entry in `project_type`:
+
 ```{r}
 df %>% 
   group_by(final_id) %>% 
@@ -347,6 +349,7 @@ df %>%
 ```
 
 With this reduced dataset, the distribution of the target variable become:
+
 ```{r}
 df %>%
   group_by(final_id) %>%
