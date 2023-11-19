@@ -26,7 +26,9 @@ class PrepareData:
             self.df = pl.read_csv(self.data_file)
         except FileNotFoundError:
             data_url = "https://github.com/velux-lead-data-scientist/velux_data_scientist/raw/main/data/data.csv"
-            f"Please run `curl -LJO {data_url} data/data.csv` to download data"
+            raise FileNotFoundError(
+                f"Please run `curl -LJO {data_url}` from inside data/"
+            )
 
         pass
 
