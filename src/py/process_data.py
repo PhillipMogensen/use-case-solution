@@ -1,3 +1,4 @@
+import os
 import yaml
 import polars as pl
 from math import log
@@ -81,6 +82,11 @@ class PrepareData:
         Constructs the dataset to be used for the binary classification task and splits
         it into a train and test set in a stratified manner
         """
+        if os.path.exists("data/binary_train.csv") or os.path.exists(
+            "data/binary_test.csv"
+        ):
+            raise Warning("`binary_dataset` has already been run")
+
         if not self.is_transformed:
             raise ValueError(
                 "Please call `select_transform_and_aggregate` before calling `binary_dataset`"
@@ -91,16 +97,22 @@ class PrepareData:
                 "Only one of `binary_dataset` and `multiclass_dataset` can be called per instance of `PrepareData`"
             )
 
-        X, y = (
-            self.df.drop(columns="project_type"),
-            self.df["project_type"].map_elements(
-                lambda x: 0 if x == "no_project_intent" else 1
-            ),
+        self.df = self.df.with_columns(
+            pl.when(pl.col("project_type") == "no_project_intent")
+            .then(pl.lit(0))
+            .otherwise(pl.lit(1))
+            .alias("project_type")
         )
 
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X, y, test_size=self.test_size, stratify=y
+        df_train, df_test = train_test_split(
+            self.df,
+            test_size=self.test_size,
+            stratify=self.df["project_type"],
+            random_state=1234,
         )
+
+        df_train.write_csv("data/binary_train.csv")
+        df_test.write_csv("data/binary_test.csv")
 
         pass
 
@@ -109,6 +121,11 @@ class PrepareData:
         Constructs the dataset to be used for the multiclass classification task and splits
         it into a train and test set in a stratified manner
         """
+        if os.path.exists("data/multiclass_train.csv") or os.path.exists(
+            "data/multiclass_test.csv"
+        ):
+            raise Warning("`binary_dataset` has already been run")
+
         if not self.is_transformed:
             raise ValueError(
                 "Please call `select_transform_and_aggregate` before calling `binary_dataset`"
@@ -119,31 +136,32 @@ class PrepareData:
                 "Only one of `binary_dataset` and `multiclass_dataset` can be called per instance of `PrepareData`"
             )
 
-        df_subset = self.df.filter(
-            ~pl.col("project_type").is_in(["no_project_intent", "allprojects"])
-        )
-
         renovation_types = ["atticrenovation", "loftconversion", "renovation"]
         construction_types = ["newbuild", "extension", "reroofing"]
         window_types = ["replacement", "upgrading"]
 
-        X, y = (
-            df_subset.drop(columns="project_type"),
-            df_subset.with_columns(
-                pl.when(pl.col("project_type").is_in(renovation_types))
-                .then(pl.lit("renovation"))
-                .when(pl.col("project_type").is_in(construction_types))
-                .then(pl.lit("construction"))
-                .when(pl.col("project_type").is_in(window_types))
-                .then(pl.lit("windows"))
-                .otherwise(pl.col("project_type"))
-                .alias("y")
-            )["y"],
+        df_subset = self.df.filter(
+            ~pl.col("project_type").is_in(["no_project_intent", "allprojects"])
+        ).with_columns(
+            pl.when(pl.col("project_type").is_in(renovation_types))
+            .then(pl.lit("renovation"))
+            .when(pl.col("project_type").is_in(construction_types))
+            .then(pl.lit("construction"))
+            .when(pl.col("project_type").is_in(window_types))
+            .then(pl.lit("windows"))
+            .otherwise(pl.col("project_type"))
+            .alias("project_type")
         )
 
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X, y, test_size=self.test_size, stratify=y
+        df_train, df_test = train_test_split(
+            df_subset,
+            test_size=self.test_size,
+            stratify=df_subset["project_type"],
+            random_state=1234,
         )
+
+        df_train.write_csv("data/multiclass_train.csv")
+        df_test.write_csv("data/multiclass_test.csv")
 
         pass
 
@@ -152,14 +170,31 @@ class PrepareData:
         Runs the sequence:
         load_data -> load_config -> select_transform_and_aggregate -> <binary/multyiclass>_dataset
         """
-        self.load_data()
-        self.load_config()
-        self.select_transform_and_aggregate()
         if type.lower() == "binary":
-            self.binary_dataset()
+            files = ["data/binary_train.csv", "data/binary_test.csv"]
+            make_data = self.binary_dataset
         elif type.lower() == "multiclass":
-            self.multiclass_dataset()
+            files = ["data/multiclass_train.csv", "data/multiclass_test.csv"]
+            make_data = self.multiclass_dataset
         else:
             raise ValueError("`type` must be one of 'binary' or 'multiclass'")
+
+        if not (os.path.exists(files[0]) or os.path.exists(files[1])):
+            self.load_data()
+            self.load_config()
+            self.select_transform_and_aggregate()
+            make_data()
+
+        df_train = pl.read_csv(files[0])
+        df_test = pl.read_csv(files[1])
+
+        self.X_train, self.y_train = (
+            df_train.drop(columns=["project_type", "final_id"]),
+            df_train["project_type"],
+        )
+        self.X_test, self.y_test = (
+            df_test.drop(columns=["project_type", "final_id"]),
+            df_test["project_type"],
+        )
 
         pass

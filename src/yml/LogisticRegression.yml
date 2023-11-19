@@ -1,0 +1,14 @@
+name: Logistic Regression
+model: sklearn.linear_model.LogisticRegression
+parameters:
+  penalty: ["l1", "l2"]
+  C: [0.001, 0.01, 0.01, 0.1, 1]
+  solver: ["saga"]
+  max_iter: [10000]
+  fit_intercept: [False, True]
+  random_state: [42]
+logging_functions:
+  - feature_importances
+  - cv_curves
+type: classifier
+allow_multiclass: True

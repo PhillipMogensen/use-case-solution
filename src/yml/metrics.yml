@@ -1,0 +1,26 @@
+classifier_metrics:
+  - roc_auc
+  - average_precision
+  - name: ppv
+    callable: precision
+    kwargs:
+      zero_division: 0.0
+      average: binary
+  - name: npv
+    callable: precision
+    kwargs:
+      zero_division: 0.0
+      pos_label: 0
+      average: binary
+  - accuracy
+  - f1
+  - recall
+multiclass_metrics:
+  - roc_auc_ovr_weighted
+  - name: precision_weighted
+    callable: precision
+    kwargs:
+      zero_division: 0.0
+      average: weighted
+  - accuracy
+  - f1_weighted
