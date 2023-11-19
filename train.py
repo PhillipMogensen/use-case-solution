@@ -143,7 +143,6 @@ def train():
         pipe=pipe,
         cv=mf.cv,
         n_jobs=-1,
-        verbose=2,
     )
     t0 = time.time() - t0
     print(f"Crossvalidation finished in {t0:.2f} seconds")
