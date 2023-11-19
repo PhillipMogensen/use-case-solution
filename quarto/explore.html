@@ -228,6 +228,15 @@ construction   renovation      windows
           72          610          928 </code></pre>
 </div>
 </div>
+<section id="sample-size-imbalance-considerations" class="level2">
+<h2 class="anchored" data-anchor-id="sample-size-imbalance-considerations">Sample size / imbalance considerations</h2>
+<p>As noted above, there is a heavy class imbalance in the data set. In the data that we’ll construct for the second model (recall: multiclass classifier among those with intent), it is not <em>that</em> bad (although the <code>construction</code> category is still very underrepresented), but in the data we’ll construct for the first model (recall: binary classifier for intent or not), more than 98% of the data belongs to the negative class. While this is not a problem <em>per se</em>, it does require some considerations.</p>
+<ul>
+<li><p><strong>Choice of metric:</strong> of course, the choice of metric becomes important when classes are imbalanced. The most immediate consequence is that we cannot use the accuracy (or rather, it is problematic). The two obvious choices are to use either the ROC AUC of the precision-recall AUC, depending on the intended use. That is, if misclassification of negatives and positives carry the same weight, so to speak, the ROC AUC is the obvious choice. If the importance lies in detecting the positives to greater effect, then the precision-recall is a more obvious choice. We conjecture here, that detecting positives in the binary model is of greater important than detecting negatives, so for the binary model we’ll use the precision-recall AUC. For the multiclass model, we conjecture that an overall balanced performance is what of importance, so we’ll use the weighted ROC AUC.</p></li>
+<li><p><strong>Sample size:</strong> in the data for the binary model, we likely have much more data on the negatives than what we need to pick up any patterns in the data. Thus, we probably do not strictly <em>need</em> to use all 98389. Thus, we could under-sample the majority class (which, in turn, would also alleviate the imbalance issue). However, <span class="math inline">\(10^5\)</span> observations is still not that much, so we elect to keep all samples, so as not to discard any information.</p></li>
+<li><p>As an side-note, it is becoming increasingly common that people attempt to <em>solve</em> class imbalances by oversampling techniques (e.g., SMOTE). Personally, I challenge the notion that class imbalances are inherently problematic (and most likely a relic of the past when accuracy was to go-to metric) and, while oversampling techniques such as SMOTE certainly have their place, they will more often than not lead to overfitting and biased coefficient estimators. Thus, we do <em>not</em> oversample here</p></li>
+</ul>
+</section>
 <section id="intended-use-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="intended-use-considerations">Intended use considerations</h2>
 <p>In the above, we have implicitly assumed that the goal of the aforementioned models is to distinguish buyers from non-buyers and, in addition, distinguish the type of project that a predicted buyer is most interested in. This would, for example, be the case if the end goal of producing the model is to identify possible intervention sites to increase sales. I.e., if we can identify a potential customer with intent, then, by identifying the most likely type of intent said customer has, we can make targeted ‘ads’ to push the customer in the right direction. Additionally, we may be able to identify fringe customers and produce targeted campaigns (e.g., ‘strike now and get x% off your purchase’ campaigns) to drive up their willingness to buy.</p>
@@ -634,61 +643,52 @@ number_of_unique_page_views</code></pre>
 <ul>
 <li>The <code>if_...</code> variables are binary and are fine to be kept as is.</li>
 <li>Almost all of the remaining variables are heavily right-skewed. Many of these are likely fine when transformed <span class="math inline">\(x \mapsto \log(x + 1)\)</span>.</li>
-<li>Many variables have very few non-zero values (as evidenced by the mean and standard deviation being approximately zero). These may benefit turned into categorical/binary variables tracking <code>none/any</code> or <code>0/1/2+</code> or similarly. However, at first we leave these as is and return if they turn out to be problematic</li>
+<li>Many variables have very few non-zero values (as evidenced by the mean and standard deviation being approximately zero). These may benefit from being turned into categorical/binary variables tracking <code>0/1+</code> or <code>0/1/2+</code> or similarly. Really, it is only <code>avg_page_visit_per_session</code>, <code>avg_pages_allprojects_per_session</code>, <code>number_of_stationary_sessions</code> and <code>avg_time_per_session_sec</code> that seem to have distributions that are not almost entirely concentrated on <span class="math inline">\(0\)</span>. Thus, we elect to binarize all the remaining variables by turning them into <code>0/1+</code> variables.</li>
+<li>The interpretation of the <code>avg_pages_&lt;category&gt;_per_session</code> then becomes <code>any_pages_&lt;category&gt;_across_sessions</code> instead and the <code>number_of_&lt;something&gt;</code> variables become <code>any_&lt;something&gt;</code> variables instead.</li>
 </ul>
-<section id="figures" class="level3">
-<h3 class="anchored" data-anchor-id="figures">Figures</h3>
-<p>The only variables with, seemingly, a lot of movement are <code>number_of_mobile_sessions</code>, <code>avg_pages_flatroof_per_session</code>, <code>avg_page_visit_per_session</code>, <code>avg_pages_upgrading_per_session</code>, <code>avg_pages_allprojects_per_session</code>, <code>number_of_stationary_sessions</code> and <code>avg_time_per_session_sec</code>. We plot histograms of these on a <span class="math inline">\(x \mapsto \log_{10}(x)\)</span> scale:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>variables_with_movement <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"number_of_mobile_sessions"</span>, </span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_pages_flatroof_per_session"</span>, </span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_page_visit_per_session"</span>, </span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_pages_upgrading_per_session"</span>, </span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_pages_allprojects_per_session"</span>, </span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"number_of_stationary_sessions"</span>,</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"avg_time_per_session_sec"</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>plotdata <span class="ot">=</span> X <span class="sc">%&gt;%</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(variables_with_movement)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">all_of</span>(variables_with_movement),</span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"Variable"</span>,</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"Value"</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Value =</span> <span class="fu">log10</span>(Value <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> plotdata,</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> Value</span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(..density..)),</span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span></span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(</span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span>Variable,</span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">scales =</span> <span class="st">"free_x"</span></span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density (estimated)"</span>,</span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(log[<span class="dv">10</span>](Value))</span>
-<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="explore_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
+<section id="aggregation-of-final_ids." class="level2">
+<h2 class="anchored" data-anchor-id="aggregation-of-final_ids.">Aggregation of <code>final_id</code>’s.</h2>
+<p>As mentioned previously, there are <code>final_id</code>’s that occur <span class="math inline">\(&gt;1\)</span> times and, as the name indicates that this is a unique identifier, we elect to aggregate these. First, we note that there are 9946 IDs that occur <span class="math inline">\(&gt;1\)</span> times, making up a total of 20606 rows. Lacking information about the structure of duplicate IDs, we elect to simply max-aggregate the problematic rows. Then, for instance, an ID that is in some rows a returning customer but in others not a returning customer (e.g., <code>final_id == 634cfba158436fcb9c8e17e6</code>), will appear as a returning customer in the final data. We can do this aggregation with no issue, because there exists no <code>final_id</code> that has more than one unique entry in <code>project_type</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(final_id) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_project_types =</span> <span class="fu">length</span>(<span class="fu">unique</span>(project_type))) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n_project_types)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89,340 × 2
+  final_id                 n_project_types
+  &lt;chr&gt;                              &lt;int&gt;
+1 63120e2101598e956d2eb097               1
+2 63341a2ba442d68c747e59c1               1
+3 63341aaf33f971ad53d12481               1
+4 63341af533f971ad53d12484               1
+5 63341bb1a442d68c747e59ec               1
+# ℹ 89,335 more rows</code></pre>
+</div>
+</div>
+<p>With this reduced dataset, the distribution of the target variable become:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(final_id) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">first</span>(<span class="sc">!!</span><span class="fu">sym</span>(target))</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(y) <span class="sc">%&gt;%</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>.
+      allprojects   atticrenovation         extension    loftconversion 
+                1                 5                20                39 
+         newbuild no_project_intent        renovation       replacement 
+                6             87927               483               451 
+        reroofing         upgrading 
+               34               374 </code></pre>
+</div>
+</div>
+<p>Note, also, that there is a slightly larger proportion of observations being removed that are no <code>no_project_intent</code>, meaning that we are slightly decreasing the base probability of having any project intent in the data. Thus, it should be clarified with a subject matter expert whether the aggregation of IDs is indeed correct.</p>
+<p>From here, we move the analysis to python.</p>
 </section>
 </section>
 
