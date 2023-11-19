@@ -49,8 +49,9 @@ def parse_args():
     )
     parser.add_argument(
         "--pca",
-        action=argparse.BooleanOptionalAction,
-        help="Flag to add pca pre-processing",
+        type=int,
+        default=None,
+        help="Number of pca components to include, if doing pca for dim reduction. Use None to omit.",
     )
     parser.add_argument(
         "--scale",
