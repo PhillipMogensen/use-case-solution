@@ -18,7 +18,13 @@ ruff = "^0.1.5"
 black = "^23.11.0"
 polars = "^0.19.13"
 pyyaml = "^6.0.1"
+matplotlib = "^3.8.2"
+clearml = "^1.13.2"
+setuptools = "^68.2.2"
 
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.26.0"
 
 [build-system]
 requires = ["poetry-core"]
