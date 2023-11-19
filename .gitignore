@@ -168,3 +168,6 @@ renv/activate.R
 .vscode/launch.json
 data/binary_test.csv
 data/binary_train.csv
+data/multiclass_test.csv
+data/multiclass_train.csv
+run.sh

@@ -66,14 +66,23 @@ def cv_curves(self: ModelFactory, DataClass, logger):
     Objects to be logged to ClearML:
         - A figure of the ROC curves as achieved on each fold in the gridsearch
         - A figure of the precision recall curves as achieved on each fold in the gridsearch
+    Notes:
+        - the loop in the inner function `plot_class_curves` should be parallelized as it can be quite slow
+          when running intensive models in a multiclass setting. It's not difficult to do but it needs to
+          be rewritten to no longer use `<RocCurve/PrecisionRecall>Display.from_predictions`. Will have to
+          suffice for now.
     """
     class_names = self.best_estimator_.classes_
     n_classes = len(class_names)
     colormap = plt.get_cmap("Paired", n_classes)
 
-    def plot_class_curves(ax_roc, ax_pr, class_i):
-        roc_data = []
-        pr_data = []
+    def plot_class_curves(ax_roc, ax_pr):
+        if n_classes <= 2:
+            roc_data = []
+            pr_data = []
+        else:
+            roc_data = {key: [] for key in class_names}
+            pr_data = {key: [] for key in class_names}
 
         for i, (train, test) in enumerate(
             self.cv.split(DataClass.X_train, DataClass.y_train)
@@ -83,42 +92,81 @@ def cv_curves(self: ModelFactory, DataClass, logger):
             y_train = DataClass.y_train.to_pandas().iloc[train]
             y_test = DataClass.y_train.to_pandas().iloc[test]
 
-            y_test = (y_test == class_names[class_i]).astype(int)
-
             model = clone(self.best_estimator_)
             model.fit(X_train, y_train)
-            y_score = model.predict_proba(X_test)[:, class_i]
 
-            roc = RocCurveDisplay.from_predictions(
-                y_test, y_score, ax=ax_roc, alpha=0.1, color=colormap(class_i)
-            )
-            pr = PrecisionRecallDisplay.from_predictions(
-                y_test, y_score, ax=ax_pr, alpha=0.1, color=colormap(class_i)
-            )
+            if n_classes <= 2:
+                y_score = model.predict_proba(X_test)[:, 1]
+                roc = RocCurveDisplay.from_predictions(
+                    y_test, y_score, ax=ax_roc, alpha=0.1, color=colormap(1)
+                )
+                pr = PrecisionRecallDisplay.from_predictions(
+                    y_test, y_score, ax=ax_pr, alpha=0.1, color=colormap(1)
+                )
 
-            roc_data.append(
-                pd.DataFrame(roc.line_.get_xydata(), columns=["fpr", "tpr"])
-            )
-            pr_data.append(
-                pd.DataFrame(pr.line_.get_xydata(), columns=["recall", "precision"])
-            )
+                roc_data.append(
+                    pd.DataFrame(roc.line_.get_xydata(), columns=["fpr", "tpr"])
+                )
+                pr_data.append(
+                    pd.DataFrame(pr.line_.get_xydata(), columns=["recall", "precision"])
+                )
+            else:
+                for class_i, class_name in enumerate(class_names):
+                    y_score = model.predict_proba(X_test)[:, class_i]
+                    y_test_ = (y_test == class_names[class_i]).astype(int)
+                    roc = RocCurveDisplay.from_predictions(
+                        y_test_, y_score, ax=ax_roc, alpha=0.1, color=colormap(class_i)
+                    )
+                    pr = PrecisionRecallDisplay.from_predictions(
+                        y_test_, y_score, ax=ax_pr, alpha=0.1, color=colormap(class_i)
+                    )
 
-        roc_data = pd.concat(roc_data).groupby("fpr", as_index=False).agg("mean")
-        pr_data = pd.concat(pr_data).groupby("recall", as_index=False).agg("mean")
+                    roc_data[class_name].append(
+                        pd.DataFrame(roc.line_.get_xydata(), columns=["fpr", "tpr"])
+                    )
+                    pr_data[class_name].append(
+                        pd.DataFrame(
+                            pr.line_.get_xydata(), columns=["recall", "precision"]
+                        )
+                    )
 
-        roc_smooth = savgol_filter(roc_data["tpr"], 5, 3)
-        ax_roc.plot(roc_data["fpr"], roc_smooth, color=colormap(class_i))
+        if n_classes <= 2:
+            roc_data = pd.concat(roc_data).groupby("fpr", as_index=False).agg("mean")
+            pr_data = pd.concat(pr_data).groupby("recall", as_index=False).agg("mean")
+            roc_smooth = savgol_filter(roc_data["tpr"], 20, 3)
+            ax_roc.plot(roc_data["fpr"], roc_smooth, color=colormap(1), linewidth=2)
 
-        pr_smooth = savgol_filter(pr_data["precision"], 5, 3)
-        ax_pr.plot(pr_data["recall"], pr_smooth, color=colormap(class_i))
+            pr_smooth = savgol_filter(pr_data["precision"], 5, 3)
+            ax_pr.plot(pr_data["recall"], pr_smooth, color=colormap(1), linewidth=2)
+        else:
+            for class_i, class_name in enumerate(class_names):
+                roc_ = (
+                    pd.concat(roc_data[class_name])
+                    .groupby("fpr", as_index=False)
+                    .agg("mean")
+                )
+                pr_ = (
+                    pd.concat(pr_data[class_name])
+                    .groupby("recall", as_index=False)
+                    .agg("mean")
+                )
+
+                roc_smooth = savgol_filter(roc_["tpr"], 20, 3)
+                ax_roc.plot(
+                    roc_["fpr"], roc_smooth, color=colormap(class_i), linewidth=2
+                )
+
+                pr_smooth = savgol_filter(pr_["precision"], 5, 3)
+                ax_pr.plot(
+                    pr_["recall"], pr_smooth, color=colormap(class_i), linewidth=2
+                )
 
         pass
 
+    fig_roc, ax_roc = plt.subplots(dpi=300)
+    fig_pr, ax_pr = plt.subplots(dpi=300)
     if n_classes <= 2:
-        fig_roc, ax_roc = plt.subplots(dpi=300)
-        fig_pr, ax_pr = plt.subplots(dpi=300)
-
-        plot_class_curves(ax_roc, ax_pr, class_i=1)
+        plot_class_curves(ax_roc, ax_pr)
 
         ax_roc.get_legend().remove()
         ax_pr.get_legend().remove()
@@ -126,11 +174,9 @@ def cv_curves(self: ModelFactory, DataClass, logger):
         base_precision = DataClass.y_train.mean()
         ax_pr.plot([0, 1], [base_precision, base_precision], "--")
     else:
-        fig_roc, ax_roc = plt.subplots(dpi=300)
-        fig_pr, ax_pr = plt.subplots(dpi=300)
         dummy_lines = []
+        plot_class_curves(ax_roc, ax_pr)
         for i, class_name in enumerate(class_names):
-            plot_class_curves(ax_roc, ax_pr, class_i=i)
             dummy_lines.append(
                 mlines.Line2D([], [], color=colormap(i), label=f"Class {class_name}")
             )

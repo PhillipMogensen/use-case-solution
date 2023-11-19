@@ -77,17 +77,12 @@ def hash_args(args: argparse) -> str:
     # Get all arguments
     args_dict = vars(args)
 
-    # Subset to only optional arguments
-    optional_args = {
-        k: v for k, v in args_dict.items() if k not in {"dataset", "model"}
-    }
-
     # If the contents of an argument is a list, we sort that first:
-    for key, item in optional_args.items():
+    for key, item in args_dict.items():
         if isinstance(item, list):
-            optional_args[key] = sorted(item)
+            args_dict[key] = sorted(item)
 
-    sorted_items = sorted(optional_args.items(), key=lambda x: (x[0], x[1]))
+    sorted_items = sorted(args_dict.items(), key=lambda x: (x[0], x[1]))
     args_string = str(sorted_items)
     unique_id = hashlib.md5(args_string.encode()).hexdigest()
 
@@ -132,6 +127,10 @@ def train():
     dataclass = PrepareData()
     dataclass.make_x_y(args.dataset)
 
+    if args.select:
+        dataclass.X_train = dataclass.X_train[args.select]
+        dataclass.X_test = dataclass.X_test[args.select]
+
     mf = ModelFactory(args.model, multiclass)
 
     print("Starting crossvalidation")
@@ -155,6 +154,11 @@ def train():
     joblib.dump(
         mf.best_estimator_, f"{args.dataset}_model_{hash_args(args)}.pkl", compress=True
     )
+    task.upload_artifact(
+        "model", artifact_object=f"{args.dataset}_model_{hash_args(args)}.pkl"
+    )
+    task.upload_artifact("X_test", artifact_object=dataclass.X_test)
+    task.upload_artifact("y_test", artifact_object=dataclass.y_test)
 
     # Log best score
     logger.report_scalar(
