@@ -1,0 +1,45 @@
+columns_to_keep:
+  - project_type
+  - final_id
+  - if_returning_customer
+  - if_visited_marketing_domain_flag
+  - number_of_submited_forms
+  - avg_pages_hallwaycorridor_per_session
+  - avg_pages_extension_per_session
+  - number_of_form_submit_visits
+  - avg_pages_loftconversion_per_session
+  - avg_pages_reroofing_per_session
+  - number_of_ipad_sessions
+  - number_of_unique_page_views
+  - avg_pages_newbuild_per_session
+  - number_of_clicked_banners
+  - avg_pages_renovation_per_session
+  - avg_pages_replacement_per_session
+  - number_of_mobile_sessions
+  - avg_pages_flatroof_per_session
+  - avg_page_visit_per_session
+  - avg_pages_upgrading_per_session
+  - avg_pages_allprojects_per_session
+  - number_of_stationary_sessions
+  - avg_time_per_session_sec
+columns_to_log_transform:
+  - avg_page_visit_per_session
+  - avg_pages_allprojects_per_session
+  - number_of_stationary_sessions
+  - avg_time_per_session_sec
+columns_to_binarize:
+  - number_of_submited_forms
+  - avg_pages_hallwaycorridor_per_session
+  - avg_pages_extension_per_session
+  - number_of_form_submit_visits
+  - avg_pages_loftconversion_per_session
+  - avg_pages_reroofing_per_session
+  - number_of_ipad_sessions
+  - number_of_unique_page_views
+  - avg_pages_newbuild_per_session
+  - number_of_clicked_banners
+  - avg_pages_renovation_per_session
+  - avg_pages_replacement_per_session
+  - number_of_mobile_sessions
+  - avg_pages_flatroof_per_session
+  - avg_pages_upgrading_per_session
