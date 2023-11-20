@@ -1,0 +1,11 @@
+name: MLPClassifier
+model: sklearn.neural_network.MLPClassifier
+parameters:
+  activation: ["relu", "logistic"]
+  solver: ["adam"]
+  random_state: [42]
+logging_functions:
+  - feature_importances
+  - cv_curves
+type: classifier
+allow_multiclass: True
